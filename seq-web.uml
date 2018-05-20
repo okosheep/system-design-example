@@ -53,18 +53,14 @@ Web -> Action : リクエスト毎に生成
 
 Web -> Filter : アクションの共通処理、前処理を実行
 
-alt エラーやリダイレクト
-  Web <--- Filter
-end
+note over Web, Filter #Aqua : エラー判定や、リダイレクト等の処理は省略
 
 Filter -> Action : アクションを実行
 
 create Validator
 Action -> Validator : パラメーター値の検証を実行
 
-alt 検証失敗
-  Web <--- Action
-end
+note over Action, Validator #Aqua : エラー判定や、リダイレクト等の処理は省略
 
 create Value
 Action -> Value

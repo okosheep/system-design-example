@@ -21,11 +21,6 @@ box "モデル" #LightPink
   participant "ファクトリー" as Factory
 end box
 
-box "ビュー" #LightBlue
-  participant "テンプレート" as Template
-  participant "カスタムタグ" as Tag
-end box
-
 == 初期化 ==
 
 create Factory
@@ -53,9 +48,7 @@ Filter -> Action : アクションを実行
 create Validator
 Action -> Validator : パラメーター値の検証を実行
 
-alt 検証失敗
-  Web <--- Action
-end
+note over Action, Validator #Aqua : エラー判定や、リダイレクト等の処理は省略
 
 create Value
 Action -> Value
