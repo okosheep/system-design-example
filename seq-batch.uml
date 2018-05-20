@@ -1,0 +1,83 @@
+@startuml
+
+title バッチ処理のシーケンス図(PIMレベル)
+hide footbox
+
+actor "Batch" as Batch
+actor "Rails" as Rails
+
+box "コントローラー" #LightYellow
+  participant "フィルター" as Filter
+  participant "アクション" as Action
+  participant "バリデーター" as Validator
+end box
+
+box "モデル" #LightPink
+  participant "サービス" as Service
+  participant "リポジトリー" as Repositry
+  participant "データアクセス" as DAO
+  participant "エンティティー" as Entity
+  participant "値オブジェクト" as Value
+  participant "ファクトリー" as Factory
+end box
+
+box "ビュー" #LightBlue
+  participant "テンプレート" as Template
+  participant "カスタムタグ" as Tag
+end box
+
+== 初期化 ==
+
+create Factory
+Rails -> Factory : ファクトリーを初期化
+
+create Service
+Factory -> Service : サービスオブジェクトの生成
+
+create Repositry
+Factory -> Repositry : リポジトリーオブジェクトの生成
+
+create DAO
+Factory -> DAO : データアクセスオブジェクトの生成(ORMに委譲)
+
+create Template
+Rails -> Template : テンプレートのコンパイル
+
+== バッチ処理 ==
+
+create Action
+Batch -> Action : バッチ処理毎に生成
+
+Filter -> Action : アクションを実行
+
+create Validator
+Action -> Validator : パラメーター値の検証を実行
+
+alt 検証失敗
+  Web <--- Action
+end
+
+create Value
+Action -> Value
+
+Action -> Service
+
+create Value
+Service -> Value
+
+Service -> Repositry
+
+Repositry -> DAO
+
+create Entity
+DAO -> Entity
+
+Repositry <-- DAO : エンティティーにデータを格納して返す
+
+Service <-- Repositry : エンティティーもしくはイミュータブルな値オブジェクトを返す
+
+Action <-- Service
+
+Batch <--- Action
+
+@enduml
